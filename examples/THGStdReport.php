@@ -145,6 +145,7 @@ $pdf->Image('images/'.$_POST['PtFullName'].date("Y-m-d").'.png', 60, 80, '', '',
 //$html = '<img src="images/'.$_POST['PtFullName'].date("Y-m-d").'.png" style="left:100px;">';
 //$pdf->writeHTML($html, true, false, true, false, '');
 
+$pdf->SetAlpha(0.5);
 
 foreach($_POST as $key=>$value ){
 	switch($key){
@@ -153,14 +154,52 @@ foreach($_POST as $key=>$value ){
 			break;
 		case 'Heart':
 				if($value != ''){
-					$pdf->Image('images/Heart.png', 60, 180, '', '', 'PNG', '', '', true, 150, '', false, false, 1, false, false, false);
+					$pdf->Image('images/Heart.png', 100, 130, '', '', 'PNG', '', '', true, 150, '', false, false, 1, false, false, false);
 				}
 				else{
-					$pdf->Image('images/HeartCLEAR.png', 60, 180, '', '', 'PNG', '', '', true, 150, '', false, false, 1, false, false, false);
+					$pdf->Image('images/HeartCLEAR.png', 100, 130, '', '', 'PNG', '', '', true, 150, '', false, false, 1, false, false, false);
+				}
+			break;
+		case 'Lung':
+				if($value != ''){
+					$pdf->Image('images/Lung.png', 93, 120, '', '', 'PNG', '', '', true, 150, '', false, false, 1, false, false, false);
+				}
+				else{
+					$pdf->Image('images/LungCLEAR.png', 93, 120, '', '', 'PNG', '', '', true, 150, '', false, false, 1, false, false, false);
+				}
+			break;
+		case 'Brain':
+				if($value != ''){
+					$pdf->Image('images/Brain.png', 99, 83, '', '', 'PNG', '', '', true, 150, '', false, false, 1, false, false, false);
+				}
+				else{
+					$pdf->Image('images/BrainCLEAR.png', 99, 83, '', '', 'PNG', '', '', true, 150, '', false, false, 1, false, false, false);
+				}
+			break;
+		case 'GI':
+				if($value != ''){
+					$pdf->Image('images/Stomach.png', 98, 144, '', '', 'PNG', '', '', true, 150, '', false, false, 1, false, false, false);
+					$pdf->Image('images/GI.png', 95, 170, '', '', 'PNG', '', '', true, 150, '', false, false, 1, false, false, false);
+				}
+				else{
+					$pdf->Image('images/StomachCLEAR.png', 98, 144, '', '', 'PNG', '', '', true, 150, '', false, false, 1, false, false, false);
+					$pdf->Image('images/GICLEAR.png', 95, 170, '', '', 'PNG', '', '', true, 150, '', false, false, 1, false, false, false);
+				}
+			break;
+		case 'Kidney':
+				if($value != ''){
+					$pdf->Image('images/KidneyLt.png', 113, 172, '', '', 'PNG', '', '', true, 150, '', false, false, 1, false, false, false);
+					$pdf->Image('images/KidneyRt.png', 95, 170, '', '', 'PNG', '', '', true, 150, '', false, false, 1, false, false, false);
+				}
+				else{
+					$pdf->Image('images/KidneyLtCLEAR.png', 113, 172, '', '', 'PNG', '', '', true, 150, '', false, false, 1, false, false, false);
+					$pdf->Image('images/KidneyRtCLEAR.png', 93, 172, '', '', 'PNG', '', '', true, 150, '', false, false, 1, false, false, false);
 				}
 			break;
 	}
 }
+
+$pdf->SetAlpha(1);
 
 foreach($_POST as $key=>$value ){
 	if($value != ''){
