@@ -130,15 +130,16 @@ $pdf->setPageMark();
 // add a page
 $pdf->AddPage();
 
-$pdf->SetFont('freeserif', '', 10);
+$pdf->SetFont('freeserif', '', 20);
 $pdf->SetXY(30, 20);
-$pdf->Write(20, 'ORGAN INFO GRAPHIC', '', 0, 'L', true, 0, false, false, 0);
+$pdf->Write(10, 'ORGAN INFO GRAPHIC', '', 0, 'L', true, 0, false, false, 0);
 
 $im = LoadPNG('images/WholeBody.png');
 imagepng($im, 'images/'.$_POST['PtFullName'].date("Y-m-d").'.png');
 
 $x = 100; $y = 80; $w = ''; $h = '';
 $pdf->SetXY(140, 80);
+$pdf->SetLineStyle(array('width' => 0.0, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(255, 255, 255)));
 //$pdf->Rect($x, $y, $w, $h, 'F', array(), array(255,255,255));
 //$pdfRefer = 'https://www.venitaclinic.com/Qweb/site1_Wiztech/WiztechPartner/';
 $pdf->Image('images/'.$_POST['PtFullName'].date("Y-m-d").'.png', 60, 80, '', '', 'PNG', pdfRefer, '', true, 150, '', false, false, 1, false, false, false);
@@ -146,6 +147,8 @@ $pdf->Image('images/'.$_POST['PtFullName'].date("Y-m-d").'.png', 60, 80, '', '',
 //$pdf->writeHTML($html, true, false, true, false, '');
 
 $pdf->SetAlpha(0.5);
+$alertSystem = '<br>ALSO PAY ATTENTION ON<hr>';
+unset($_POST['PtFullName']);
 
 foreach($_POST as $key=>$value ){
 	switch($key){
@@ -196,10 +199,51 @@ foreach($_POST as $key=>$value ){
 					$pdf->Image('images/KidneyRtCLEAR.png', 93, 172, '', '', 'PNG', '', '', true, 150, '', false, false, 1, false, false, false);
 				}
 			break;
+		case 'Liver':
+				if($value != ''){
+					$pdf->Image('images/Liver.png', 95, 149, '', '', 'PNG', '', '', true, 150, '', false, false, 1, false, false, false);
+				}
+				else{
+					$pdf->Image('images/LiverCLEAR.png', 95, 149, '', '', 'PNG', '', '', true, 150, '', false, false, 1, false, false, false);
+
+				}
+			break;
+		default:
+			if($value != ''){
+				$alertSystem .= str_replace("_"," ",$key).'<br>';
+			}
+			break;
 	}
 }
 
 $pdf->SetAlpha(1);
+
+$pdf->SetFont('freeserif', '', 16);
+//$pdf->Cell(30, 0, 'Bottom-Bottom', 1, $ln=0, 'C', 0, '', 0, false, 'B', 'B');
+$pdf->SetXY(100, 100);
+$pdf->writeHTML($alertSystem, true, false, true, false, '');
+//$pdf->Write(20, $alertSystem, '', 0, 'L', true, 0, false, false, 0);
+
+$systemIcon = array(
+	'Blood_Quality'=>'BloodICON.png',
+	'Heart'=>'HeartICON.png',
+	'Lung'=>'LungICON.png',
+	'Brain'=>'BrainICON.png',
+	'Tumor_Marker' => 'tumorIcon.png',
+	'Immunity_Profile' => 'immuneIcon.png',
+	'Ultrasound_and_Imaging' => 'medImageIcon',
+	'Hematology' => 'hematoIcon',
+	'Lipid' => 'lipidIcon',
+	'Sugar_Metabolism' => 'sugarMetIcon',
+	'Thyroid_Hormone' => 'thyroidHormIcon',
+	'Sex_Hormone' => 'sexIcon',
+	'Trace_Element' => 'tElemIcon',
+	'Vitamin_Level' => 'vitLevelIcon',
+	'Vascular_System' => 'vascularIcon',
+	'Toxicity_Test' => 'toxicIcon',
+	'Genetic_Screening' => 'GeneIcon',
+	'ETC'=> 'ETC'
+);
 
 foreach($_POST as $key=>$value ){
 	if($value != ''){
@@ -229,9 +273,12 @@ foreach($_POST as $key=>$value ){
 		// add a page
 		$pdf->AddPage();
 
-		$pdf->SetFont('freeserif', '', 10);
-		$pdf->SetXY(80, 240);
-		$pdf->Write(20, $value, '', 0, 'L', true, 0, false, false, 0);
+		if(isset($systemIcon[$key])){
+			$pdf->Image('images/'.$systemIcon[$key], 20, 40, '', '', 'PNG', '', '', true, 150, '', false, false, 1, false, false, false);
+		}
+		$pdf->SetFont('freeserif', '', 16);
+		$pdf->SetXY(80, 40);
+		$pdf->Write(20, $value.' '.'images/'.$systemIcon[$key], '', 0, 'L', true, 0, false, false, 0);
 
 		// Create a blank image and add some text
 
@@ -249,7 +296,7 @@ foreach($_POST as $key=>$value ){
 
 
 		// Free up memory
-		imagedestroy($im);
+		//imagedestroy($im);
 	}
 }
 
