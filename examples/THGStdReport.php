@@ -48,13 +48,15 @@ class MYPDF extends TCPDF {
 	}
 }
 
+$fullName = $_POST['PtFullName'];
+
 // create new PDF document
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
 // set document information
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor('Nicola Asuni');
-$pdf->SetTitle('TCPDF Example 051');
+$pdf->SetTitle('๋JIN WELLNESS REPORT of '.$fullName.' '.date('Y-m-d'));
 $pdf->SetSubject('TCPDF Tutorial');
 $pdf->SetKeywords('TCPDF, PDF, example, test, guide');
 
@@ -130,9 +132,12 @@ $pdf->setPageMark();
 // add a page
 $pdf->AddPage();
 
+$pdf->Image('images/JinWellnessBanner.png', 20, 10, '', '', 'PNG', '', '', true, 150, '', false, false, 1, false, false, false);
+				
+
 $pdf->SetFont('freeserif', '', 20);
 $pdf->SetXY(30, 20);
-$pdf->Write(10, 'ORGAN INFO GRAPHIC', '', 0, 'L', true, 0, false, false, 0);
+$pdf->Write(40, 'ORGAN INFO GRAPHIC', '', 0, 'L', true, 0, false, false, 0);
 
 $im = LoadPNG('images/WholeBody.png');
 imagepng($im, 'images/'.$_POST['PtFullName'].date("Y-m-d").'.png');
@@ -148,6 +153,7 @@ $pdf->Image('images/'.$_POST['PtFullName'].date("Y-m-d").'.png', 60, 80, '', '',
 
 $pdf->SetAlpha(0.5);
 $alertSystem = '<br>ALSO PAY ATTENTION ON<hr>';
+
 unset($_POST['PtFullName']);
 
 foreach($_POST as $key=>$value ){
@@ -225,24 +231,27 @@ $pdf->writeHTML($alertSystem, true, false, true, false, '');
 //$pdf->Write(20, $alertSystem, '', 0, 'L', true, 0, false, false, 0);
 
 $systemIcon = array(
-	'Blood_Quality'=>'BloodICON.png',
-	'Heart'=>'HeartICON.png',
-	'Lung'=>'LungICON.png',
-	'Brain'=>'BrainICON.png',
-	'Tumor_Marker' => 'tumorIcon.png',
-	'Immunity_Profile' => 'immuneIcon.png',
-	'Ultrasound_and_Imaging' => 'medImageIcon',
-	'Hematology' => 'hematoIcon',
-	'Lipid' => 'lipidIcon',
-	'Sugar_Metabolism' => 'sugarMetIcon',
-	'Thyroid_Hormone' => 'thyroidHormIcon',
-	'Sex_Hormone' => 'sexIcon',
-	'Trace_Element' => 'tElemIcon',
-	'Vitamin_Level' => 'vitLevelIcon',
-	'Vascular_System' => 'vascularIcon',
-	'Toxicity_Test' => 'toxicIcon',
-	'Genetic_Screening' => 'GeneIcon',
-	'ETC'=> 'ETC'
+	'Blood_Quality'=>array('BloodICON.png', 'BLOOD QUALIY ANALYSIS'),
+	'Heart'=>array('HeartICON.png', 'HEART EVALUATION & ANALYSIS'),
+	'Lung'=>array('LungICON.png','LUNG EVALUATION & ANALYSIS'),
+	'Brain'=>array('BrainICON.png', 'BRAIN EVALUATION & ANALYSIS'),
+	'Tumor_Marker' => array('tumorIcon.png','TUMOR MARKER ANALYSIS'),
+	'Immunity_Profile' => array('immuneIcon.png', 'IMMUNITY STATUS'),
+	'Ultrasound_and_Imaging' => array('medImageIcon.png','ULTRASOUND & MEDICAL IMAGING REMARKS'),
+	'GI' => array('GIicon.png','GI & MICROBIOME REMARKS'),
+	'Hematology' => array('hematoIcon.png','HEMATOLOGY REMARKS'),
+	'Kidney' => array('kidneyIcon.png','KIDNEY & URINALAYSIS REMARKS'),
+	'Lipid' => array('lipidIcon.png', 'LIPID METABOLISM PROFILE'),
+	'Sugar_Metabolism' => array('sugarMetIcon.png', 'SUGAR METABOLISM'),
+	'Thyroid_Hormone' => array('thyroidHormIcon.png', 'THYROID HORMONE EVALUATION'),
+	'Sex_Hormone' => array('sexIcon.png','SEX HORMONE EVALUATION'),
+	'Trace_Element' => array('tElemIcon.png', 'TRACE ELEMENTS & MICRO NUTRIENT'),
+	'Vitamin_Level' => array('vitLevelIcon.png','VITAMIN EVALUTAION'),
+	'Vascular_System' => array('vascularIcon.png','VASCULAR HEALTH EVALUATION'),
+	'Toxicity_Test' => array('toxicIcon.png','TOXICITY PROFILE'),
+	'Genetic_Screening' => array('GeneIcon.png','GENETIC PROFILE & COUNCELING'),
+	'Liver' => array('LiverIcon.png','LIVER EVALUATION & ANALYSIS'),
+	'ETC'=> array('ETC.png', 'OTHER REMARKS FROM DOCTORS')
 );
 
 foreach($_POST as $key=>$value ){
@@ -273,13 +282,20 @@ foreach($_POST as $key=>$value ){
 		// add a page
 		$pdf->AddPage();
 
+		
+		$pdf->Image('images/JinWellnessBanner.png', 20, 10, '', '', 'PNG', '', '', true, 150, '', false, false, 1, false, false, false);
+
+
 		if(isset($systemIcon[$key])){
-			$pdf->Image('images/'.$systemIcon[$key], 20, 40, '', '', 'PNG', '', '', true, 150, '', false, false, 1, false, false, false);
+			$pdf->Image('images/'.$systemIcon[$key][0], 20, 40, '', '', 'PNG', '', '', true, 150, '', false, false, 1, false, false, false);
 		}
 		$pdf->SetFont('freeserif', '', 16);
-		$pdf->SetXY(80, 40);
-		$pdf->Write(20, $value.' '.'images/'.$systemIcon[$key], '', 0, 'L', true, 0, false, false, 0);
+		$pdf->SetXY(50, 40);
+		//$pdf->Write(20, $value.' '.'images/'.$systemIcon[$key], '', 0, 'L', true, 0, false, false, 0);
+		$pdf->Write(20, $systemIcon[$key][1], '', 0, 'L', true, 0, false, false, 0);
 
+		$pdf->SetXY(20, 70);
+		$pdf->writeHTML($value, true, false, true, false, '');
 		// Create a blank image and add some text
 
 
@@ -308,7 +324,7 @@ unset($_POST['PtFullName']);
 // ---------------------------------------------------------
 
 //Close and output PDF document
-$pdf->Output('example_051.pdf', 'I');
+$pdf->Output('REPORT of '.$fullName.' '.date('Y-m-d').'.pdf', 'I');
 
 //============================================================+
 // END OF FILE
