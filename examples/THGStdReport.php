@@ -49,6 +49,7 @@ class MYPDF extends TCPDF {
 }
 
 $fullName = $_POST['PtFullName'];
+$fHN = $_POST['PtHN'];
 
 // create new PDF document
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -99,7 +100,8 @@ $pdf->AddPage();
 <p stroke="0.2" fill="true" strokecolor="yellow" color="blue" style="font-family:helvetica;font-weight:bold;font-size:26pt;">You can set a full page background.</p>';
 $pdf->writeHTML($html, true, false, true, false, '');*/
 
-$pdf->SetFont('times', '', 16);
+//$pdf->SetFont('times', '', 16);
+$pdf->SetFont('freeserif', '', 16);
 $pdf->SetXY(80, 240);
 $pdf->Write(20, $_POST['PtFullName'], '', 0, 'L', true, 0, false, false, 0);
 // add a page
@@ -215,7 +217,7 @@ foreach($_POST as $key=>$value ){
 				}
 			break;
 		default:
-			if($value != ''){
+			if($value != '' && $key != 'PtHN'){
 				$alertSystem .= str_replace("_"," ",$key).'<br>';
 			}
 			break;
@@ -255,7 +257,7 @@ $systemIcon = array(
 );
 
 foreach($_POST as $key=>$value ){
-	if($value != ''){
+	if($value != '' && $key != 'PtHN'){
 		// remove default header
 		$pdf->setPrintHeader(false);
 
@@ -295,7 +297,31 @@ foreach($_POST as $key=>$value ){
 		$pdf->Write(20, $systemIcon[$key][1], '', 0, 'L', true, 0, false, false, 0);
 
 		$pdf->SetXY(20, 70);
-		$pdf->writeHTML($value, true, false, true, false, '');
+
+		$needles = array("<br>", "&#13;", "<br/>", "\n");
+		$replacement = "<br />";
+		$fValue = str_replace($needles, '/\n', $value);
+		
+
+
+		//$pdf->writeHTML($fValue, true, false, true, false, '');
+		//#writeHTML(html, ln = true, fill = 0, reseth = false, cell = false, align = '') ⇒ Object Also known as: write_html
+		$pdf->writeHTML($value, true, false, true, false, 'L');
+
+		// set color for background
+		$pdf->SetFillColor(255, 255, 155);
+
+		// set font
+		//$pdf->SetFont('helvetica', '', 8);
+
+		// set cell padding
+		$pdf->setCellPaddings(2, 4, 6, 8);
+
+		$txt = "CUSTOM PADDING:\nLeft=2, Top=4, Right=6, Bottom=8\nLorem ipsum dolor sit amet, consectetur adipiscing elit. In sed imperdiet lectus.\n\nPhasellus quis velit velit, non condimentum quam. Sed neque urna, ultrices ac volutpat vel, laoreet vitae augue.\n";
+
+		//#MultiCell(w, h, txt, border = 0, align = 'J', fill = 0, ln = 1, x = '', y = '', reseth = true, stretch = 0, ishtml = false, autopadding = true, maxh = 0)
+		//$pdf->MultiCell(170, 5, $value, 1, 'J', 1, 2, 20, 60, true);
+
 		// Create a blank image and add some text
 
 
@@ -325,6 +351,8 @@ unset($_POST['PtFullName']);
 
 //Close and output PDF document
 $pdf->Output('REPORT of '.$fullName.' '.date('Y-m-d').'.pdf', 'I');
+//$pdf->Output('REPORT of '.$fullName.' '.date('Y-m-d').'.pdf', 'F');
+$pdf->Output(__DIR__ . '/Report/REPORT of '.$_POST['PtHN'].' '.date('Y-m-d').'.pdf', 'F');
 
 //============================================================+
 // END OF FILE
